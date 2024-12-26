@@ -61,6 +61,7 @@ public abstract class Player : MonoBehaviour
 
     public virtual void Crouch()
     {
-        
+        bool isCrouching = _animator.GetBool("Crouch");
+        _animator.SetBool("Crouch", !isCrouching);
     }
 }

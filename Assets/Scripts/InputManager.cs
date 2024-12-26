@@ -9,7 +9,9 @@ public interface Command
 
 public class InputManager : MonoBehaviour
 {
-    private Dictionary<KeyCode, Command> keyBindings = new Dictionary<KeyCode, Command>();
+    private Dictionary<KeyCode, Command> keyDownCommands = new Dictionary<KeyCode, Command>();
+    private Dictionary<KeyCode, Command> keyHoldCommands = new Dictionary<KeyCode, Command>();
+
     private Player player;
 
     void Awake()
@@ -17,9 +19,9 @@ public class InputManager : MonoBehaviour
         player = FindObjectOfType<Player>();
     }
 
-    public void BindKey(KeyCode key, Command command)
+    public void BindKey(KeyCode key, Command command, Dictionary<KeyCode, Command> dictionary)
     {
-        keyBindings[key] = command;
+        dictionary[key] = command;
     }
 
     void Start()
@@ -30,18 +32,26 @@ public class InputManager : MonoBehaviour
         AttackCommand attack = new AttackCommand();
         CrouchCommand crouch = new CrouchCommand();
 
-        BindKey(KeyCode.W, jump);
-        BindKey(KeyCode.A, moveLeft);
-        BindKey(KeyCode.D, moveRight);
-        BindKey(KeyCode.L, attack);
-        BindKey(KeyCode.LeftShift, crouch);
+        BindKey(KeyCode.W, jump, keyDownCommands);
+        BindKey(KeyCode.A, moveLeft, keyDownCommands);
+        BindKey(KeyCode.D, moveRight, keyDownCommands);
+        BindKey(KeyCode.L, attack, keyDownCommands);
+        BindKey(KeyCode.LeftShift, crouch, keyHoldCommands);
     }
 
     void Update()
     {
-        foreach (var binding in keyBindings)
+        foreach (var binding in keyDownCommands)
         {
             if (Input.GetKey(binding.Key))
+            {
+                binding.Value?.Execute(player);
+            }
+        }
+
+        foreach (var binding in keyHoldCommands)
+        {
+            if (Input.GetKeyDown(binding.Key) || Input.GetKeyUp(binding.Key))
             {
                 binding.Value?.Execute(player);
             }
