@@ -1,4 +1,4 @@
-public class Dino : Entity
+public class Enemy : Entity
 {
     protected override void Awake()
     {
@@ -23,15 +23,5 @@ public class Dino : Entity
     public override void MoveAnimation()
     {
         base.MoveAnimation();
-    }
-
-    public override void TakeDamage(float damage)
-    {
-        base.TakeDamage(damage);
-    }
-
-    protected override void Die()
-    {
-        base.Die();
     }
 }
